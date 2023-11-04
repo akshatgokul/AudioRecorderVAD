@@ -190,8 +190,8 @@ public class SetupActivity extends Activity implements SetupContract.View, View.
 		values[3] = getResources().getString(R.string.naming) + " " + FileUtil.generateRecordNameDateISO8601() + ".m4a";
 		values[4] = getResources().getString(R.string.naming) + " " + FileUtil.generateRecordNameMills() + ".m4a";
 		values[5] = getResources().getString(R.string.naming) + " " + FileUtil.generateRecordNameMillsLocation() + ".m4a";
-		for (int i = 0; i < values.length; i++) {
-			items.add(new AppSpinnerAdapter.ThemeItem(values[i],
+		for (String value : values) {
+			items.add(new AppSpinnerAdapter.ThemeItem(value,
 					getApplicationContext().getResources().getColor(colorMap.getPrimaryColorRes())));
 		}
 		AppSpinnerAdapter adapter = new AppSpinnerAdapter(SetupActivity.this,
