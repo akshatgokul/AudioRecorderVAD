@@ -60,13 +60,13 @@ public class LostRecordsActivity extends Activity implements LostRecordsContract
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
-		setTheme(ARApplication.getInjector().provideColorMap().getAppThemeResource());
+		setTheme(ARApplication.injector.provideColorMap().getAppThemeResource());
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lost_records);
 
 		ImageButton btnBack = findViewById(R.id.btn_back);
 		btnBack.setOnClickListener(v -> {
-			ARApplication.getInjector().releaseLostRecordsPresenter();
+			ARApplication.injector.releaseLostRecordsPresenter();
 			finish();
 		});
 		findViewById(R.id.btn_file_browser).setOnClickListener(v -> startActivity(FileBrowserActivity.getStartIntent(getApplicationContext())));
@@ -108,7 +108,7 @@ public class LostRecordsActivity extends Activity implements LostRecordsContract
 			}
 		}
 
-		presenter = ARApplication.getInjector().provideLostRecordsPresenter();
+		presenter = ARApplication.injector.provideLostRecordsPresenter();
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class LostRecordsActivity extends Activity implements LostRecordsContract
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		ARApplication.getInjector().releaseLostRecordsPresenter();
+		ARApplication.injector.releaseLostRecordsPresenter();
 	}
 
 	@Override

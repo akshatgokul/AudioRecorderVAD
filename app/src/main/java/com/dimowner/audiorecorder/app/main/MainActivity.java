@@ -18,6 +18,7 @@ package com.dimowner.audiorecorder.app.main;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -25,6 +26,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -66,11 +71,19 @@ import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.AnimationUtil;
 import com.dimowner.audiorecorder.util.FileUtil;
 import com.dimowner.audiorecorder.util.TimeUtils;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import timber.log.Timber;
 
 public class MainActivity extends Activity implements MainContract.View, View.OnClickListener {
@@ -88,6 +101,12 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 	public static final int REQ_CODE_READ_EXTERNAL_STORAGE_PLAYBACK = 406;
 	public static final int REQ_CODE_READ_EXTERNAL_STORAGE_DOWNLOAD = 407;
 	public static final int REQ_CODE_IMPORT_AUDIO = 11;
+
+	public final static int REQ_CODE_LOCATION = 100;
+	@SuppressLint("StaticFieldLeak")
+	public static TextView latitude;
+	@SuppressLint("StaticFieldLeak")
+	public static TextView longitude;
 
 	private WaveformViewNew waveformView;
 	private RecordingWaveformView recordingWaveformView;
@@ -113,6 +132,10 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 	private ColorMap colorMap;
 	private FileRepository fileRepository;
 	private ColorMap.OnThemeColorChangeListener onThemeColorChangeListener;
+
+	// Location
+	FusedLocationProviderClient fusedLocationProviderClient;
+
 
 	private final ServiceConnection connection = new ServiceConnection() {
 
@@ -155,7 +178,7 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		colorMap = ARApplication.getInjector().provideColorMap();
+		colorMap = ARApplication.injector.provideColorMap();
 		setTheme(colorMap.getAppThemeResource());
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -173,6 +196,7 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 		btnDelete = findViewById(R.id.btn_record_delete);
 		btnStop = findViewById(R.id.btn_stop);
 		ImageButton btnRecordsList = findViewById(R.id.btn_records_list);
+		ImageButton btnLocation = findViewById(R.id.btn_location);
 		ImageButton btnSettings = findViewById(R.id.btn_settings);
 		btnShare = findViewById(R.id.btn_share);
 		btnImport = findViewById(R.id.btn_import);
@@ -196,11 +220,25 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 		btnDelete.setOnClickListener(this);
 		btnStop.setOnClickListener(this);
 		btnRecordsList.setOnClickListener(this);
+		btnLocation.setOnClickListener(this);
 		btnSettings.setOnClickListener(this);
 		btnShare.setOnClickListener(this);
 		btnImport.setOnClickListener(this);
 		txtName.setOnClickListener(this);
 		space = getResources().getDimension(R.dimen.spacing_xnormal);
+
+		//Location
+		latitude = findViewById(R.id.latitude);
+		longitude = findViewById(R.id.longitude);
+
+		fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+		btnLocation.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				getLastLocation();
+			}
+		});
 
 		playProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
@@ -222,8 +260,8 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 			}
 		});
 
-		presenter = ARApplication.getInjector().provideMainPresenter();
-		fileRepository = ARApplication.getInjector().provideFileRepository();
+		presenter = ARApplication.injector.provideMainPresenter();
+		fileRepository = ARApplication.injector.provideFileRepository();
 
 		waveformView.setOnSeekListener(new WaveformViewNew.OnSeekListener() {
 			@Override
@@ -269,6 +307,38 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 		}
 	}
 
+	private void getLastLocation() {
+		if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+			fusedLocationProviderClient.getLastLocation()
+					.addOnSuccessListener(new OnSuccessListener<Location>() {
+						@SuppressLint("SetTextI18n")
+						@Override
+						public void onSuccess(Location location) {
+							if (location != null) {
+								Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+								List<Address> myLocation = null;
+								try {
+									myLocation = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+									latitude.setText("" + myLocation.get(0).getLatitude());
+									longitude.setText("" + myLocation.get(0).getLongitude());
+								} catch (IOException e) {
+									throw new RuntimeException(e);
+								}
+
+							}
+						}
+					});
+		} else {
+
+			checkLocationPermission();
+		}
+	}
+
+	private void checkLocationPermission() {
+		ActivityCompat.requestPermissions(MainActivity.this, new String[]
+				{Manifest.permission.ACCESS_FINE_LOCATION},REQ_CODE_LOCATION);
+	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -279,7 +349,7 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 //			presenter.checkPublicStorageRecords();
 		}
 		presenter.checkFirstRun();
-		presenter.setAudioRecorder(ARApplication.getInjector().provideAudioRecorder());
+		presenter.setAudioRecorder(ARApplication.injector.provideAudioRecorder());
 		presenter.updateRecordingDir(getApplicationContext());
 		presenter.loadActiveRecord();
 
@@ -921,6 +991,10 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 				|| grantResults[1] == PackageManager.PERMISSION_DENIED)) {
 			presenter.setStoragePrivate(getApplicationContext());
 			startRecordingService();
+		} else if (requestCode == REQ_CODE_LOCATION && grantResults.length > 0
+				&& (grantResults[0] == PackageManager.PERMISSION_GRANTED
+				|| grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+			getLastLocation();
 		}
 	}
 }

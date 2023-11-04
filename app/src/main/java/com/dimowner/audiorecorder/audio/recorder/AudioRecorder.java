@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import timber.log.Timber;
 
 import static com.dimowner.audiorecorder.AppConstants.RECORDING_VISUALIZATION_INTERVAL;
+import static com.dimowner.audiorecorder.AppConstants.RECORD_MAX_DURATION;
 
 public class AudioRecorder implements RecorderContract.Recorder {
 

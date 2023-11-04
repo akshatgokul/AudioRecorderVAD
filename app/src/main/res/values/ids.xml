@@ -3,4 +3,7 @@
 	<item name="btn_trash" type="id" />
 	<item name="btn_progress" type="id" />
 	<item name="txt_progress" type="id" />
+    <item name="longitude" type="id" />
+	<item name="latitude" type="id" />
+    <item name="btn_records_list" type="id" />
 </resources>

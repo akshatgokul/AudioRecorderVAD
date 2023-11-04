@@ -73,13 +73,13 @@ public class FileBrowserActivity extends Activity implements FileBrowserContract
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
-		setTheme(ARApplication.getInjector().provideColorMap().getAppThemeResource());
+		setTheme(ARApplication.injector.provideColorMap().getAppThemeResource());
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_file_browser);
 
 		ImageButton btnBack = findViewById(R.id.btn_back);
 		btnBack.setOnClickListener(v -> {
-			ARApplication.getInjector().releaseFileBrowserPresenter();
+			ARApplication.injector.releaseFileBrowserPresenter();
 			finish();
 		});
 
@@ -97,7 +97,7 @@ public class FileBrowserActivity extends Activity implements FileBrowserContract
 
 		RecyclerView recyclerView = findViewById(R.id.recycler_view);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-		adapter = new FileBrowserAdapter(getApplicationContext(), ARApplication.getInjector().provideSettingsMapper());
+		adapter = new FileBrowserAdapter(getApplicationContext(), ARApplication.injector.provideSettingsMapper());
 		adapter.setOnItemClickListener(new FileBrowserAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(RecordInfo record) {
@@ -132,7 +132,7 @@ public class FileBrowserActivity extends Activity implements FileBrowserContract
 			}
 		});
 		recyclerView.setAdapter(adapter);
-		presenter = ARApplication.getInjector().provideFileBrowserPresenter();
+		presenter = ARApplication.injector.provideFileBrowserPresenter();
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class FileBrowserActivity extends Activity implements FileBrowserContract
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		ARApplication.getInjector().releaseFileBrowserPresenter();
+		ARApplication.injector.releaseFileBrowserPresenter();
 	}
 
 	@Override

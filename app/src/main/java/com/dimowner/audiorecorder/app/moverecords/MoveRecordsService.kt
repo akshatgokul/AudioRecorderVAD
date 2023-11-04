@@ -83,12 +83,12 @@ class MoveRecordsService : Service() {
 
 	override fun onCreate() {
 		super.onCreate()
-		colorMap = ARApplication.getInjector().provideColorMap()
-		prefs = ARApplication.getInjector().providePrefs()
-		copyTasks = ARApplication.getInjector().provideCopyTasksQueue()
-		loadingTasks = ARApplication.getInjector().provideLoadingTasksQueue()
-		fileRepository = ARApplication.getInjector().provideFileRepository()
-		localRepository = ARApplication.getInjector().provideLocalRepository()
+		colorMap = ARApplication.injector.provideColorMap()
+		prefs = ARApplication.injector.providePrefs()
+		copyTasks = ARApplication.injector.provideCopyTasksQueue()
+		loadingTasks = ARApplication.injector.provideLoadingTasksQueue()
+		fileRepository = ARApplication.injector.provideFileRepository()
+		localRepository = ARApplication.injector.provideLocalRepository()
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -230,7 +230,7 @@ class MoveRecordsService : Service() {
 		// Create notification default intent.
 		val intent = Intent(applicationContext, MainActivity::class.java)
 		intent.flags = Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP
-		val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, 0)
+		val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_MUTABLE)
 
 		// Create notification builder.
 		builder = NotificationCompat.Builder(this, CHANNEL_ID)
@@ -260,7 +260,7 @@ class MoveRecordsService : Service() {
 	private fun getCancelMovePendingIntent(context: Context): PendingIntent {
 		val intent = Intent(context, StopMoveRecordsReceiver::class.java)
 		intent.action = ACTION_CANCEL_MOVE_RECORDS
-		return PendingIntent.getBroadcast(context, 318, intent, 0)
+		return PendingIntent.getBroadcast(context, 318, intent, PendingIntent.FLAG_MUTABLE)
 	}
 
 	@RequiresApi(Build.VERSION_CODES.O)

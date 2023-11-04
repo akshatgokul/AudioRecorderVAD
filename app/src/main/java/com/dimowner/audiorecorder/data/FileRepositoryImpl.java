@@ -73,6 +73,9 @@ public class FileRepositoryImpl implements FileRepository {
 			case AppConstants.NAME_FORMAT_TIMESTAMP:
 				recordName = FileUtil.generateRecordNameMills();
 				break;
+			case AppConstants.NAME_FORMAT_TIMESTAMP_LOCATION:
+				recordName = FileUtil.generateRecordNameMillsLocation();
+				break;
 		}
 		switch (prefs.getSettingRecordingFormat()) {
 			default:

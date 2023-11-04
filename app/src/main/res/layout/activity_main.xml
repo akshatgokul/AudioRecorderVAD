@@ -101,7 +101,8 @@
 			android:visibility="invisible"
 			android:orientation="horizontal"
 			android:layout_marginBottom="@dimen/spacing_tiny"
-			tools:visibility="visible">
+			tools:visibility="visible"
+		tools:ignore="ExtraText">
 
 		<ProgressBar
 				style="?android:attr/progressBarStyleSmall"
@@ -130,7 +131,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
-				>
+			tools:ignore="UselessParent">
 
 			<ImageView
 					android:id="@+id/placeholder"
@@ -138,7 +139,8 @@
 					android:layout_height="wrap_content"
 					android:visibility="gone"
 					android:layout_gravity="center"
-					tools:visibility="visible"/>
+					tools:visibility="visible"
+				android:contentDescription="@string/todo" />
 
 			<com.dimowner.audiorecorder.app.widget.WaveformViewNew
 					android:id="@+id/record"
@@ -189,6 +191,21 @@
 					android:src="@drawable/ic_stop"/>
 		</FrameLayout>
 
+		<TextView
+			android:id="@id/latitude"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/spacing_small"
+			android:textColor="@color/white"
+			android:textSize="@dimen/text_small" />
+		<TextView
+			android:id="@id/longitude"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/spacing_small"
+			android:textColor="@color/white"
+			android:textSize="@dimen/text_small" />
+
 	</LinearLayout>
 
 	<FrameLayout
@@ -211,6 +228,18 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical">
+
+			<ImageButton
+				android:id="@+id/btn_location"
+				android:layout_width="@dimen/bottom_pnl_btn_size"
+				android:layout_height="@dimen/bottom_pnl_btn_size"
+				android:layout_gravity="center"
+				android:layout_marginTop="@dimen/spacing_small"
+				android:adjustViewBounds="true"
+				android:background="?android:selectableItemBackgroundBorderless"
+				android:contentDescription="@null"
+				android:scaleType="centerInside"
+				android:src="@drawable/ic_location" />
 
 			<TextView
 					android:id="@+id/txt_progress"
@@ -284,18 +313,18 @@
 			android:layout_marginBottom="@dimen/spacing_small">
 
 		<ImageButton
-				android:id="@+id/btn_settings"
-				android:layout_width="@dimen/bottom_pnl_btn_size"
-				android:layout_height="@dimen/bottom_pnl_btn_size"
-				android:layout_marginTop="@dimen/spacing_small"
-				android:adjustViewBounds="true"
-				android:background="?android:selectableItemBackgroundBorderless"
-				android:layout_gravity="start"
-				android:clickable="true"
-				android:contentDescription="@string/settings"
-				android:focusable="true"
-				android:scaleType="centerInside"
-				android:src="@drawable/ic_settings"/>
+			android:id="@+id/btn_settings"
+			android:layout_width="@dimen/bottom_pnl_btn_size"
+			android:layout_height="@dimen/bottom_pnl_btn_size"
+			android:layout_gravity="start"
+			android:layout_marginTop="@dimen/spacing_small"
+			android:adjustViewBounds="true"
+			android:background="?android:selectableItemBackgroundBorderless"
+			android:clickable="true"
+			android:contentDescription="@string/settings"
+			android:focusable="true"
+			android:scaleType="centerInside"
+			android:src="@drawable/ic_settings" />
 
 		<LinearLayout
 				android:layout_width="wrap_content"

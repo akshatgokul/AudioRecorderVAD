@@ -45,10 +45,6 @@ public class ARApplication extends Application {
 
 	public static Injector injector;
 
-	public static Injector getInjector() {
-		return injector;
-	}
-
 	public static String appPackage() {
 		return PACKAGE_NAME;
 	}

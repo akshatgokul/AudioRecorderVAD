@@ -57,6 +57,7 @@ public class AppConstants {
 
 	public static final String NAME_FORMAT_RECORD = "record";
 	public static final String NAME_FORMAT_TIMESTAMP = "timestamp";
+	public static final String NAME_FORMAT_TIMESTAMP_LOCATION = "timestamp_location";
 	public static final String NAME_FORMAT_DATE = "date";
 	public static final String NAME_FORMAT_DATE_US = "date_us";
 	public static final String NAME_FORMAT_DATE_ISO8601 = "date_iso8601";

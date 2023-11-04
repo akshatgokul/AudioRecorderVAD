@@ -27,8 +27,11 @@ import android.os.StatFs;
 import android.provider.DocumentsContract;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
+import android.widget.TextView;
 
 import com.dimowner.audiorecorder.AppConstants;
+import com.dimowner.audiorecorder.R;
+import com.dimowner.audiorecorder.app.main.MainActivity;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -40,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -91,8 +95,12 @@ public class FileUtil {
 	public static String generateRecordNameMills() {
 		return String.valueOf(System.currentTimeMillis());
 	}
-
-
+	public static String generateRecordNameMillsLocation() {
+		String timeStamp = TimeUtils.formatDateForNameISO8601(System.currentTimeMillis());
+		String lat = String.valueOf(MainActivity.latitude.getText());
+		String lon = String.valueOf(MainActivity.longitude.getText());
+		return timeStamp + "_" + lat + "_" + lon;
+	}
 	public static String addExtension(String name, String extension) {
 		return name + AppConstants.EXTENSION_SEPARATOR + extension;
 	}
